@@ -27,7 +27,7 @@ export class ProductListComponent implements OnInit{
   ngOnInit(): void {
     this._productSvc.getProducts().subscribe(prod => {
       this.products = prod;
-      this._listFilter = "cart"; //for some reason setter is not called, need a prod build?
+      this._listFilter = ""; //for some reason setter is not called, need a prod build?
       this.filteredProducts = this.listFilter ? this.performFilter(this.listFilter) : this.products;
     },
         err => this.errorMsg = <any>err
