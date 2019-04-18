@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IProduct } from "../product";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ProductService} from "../product.service";
 
 @Component({
   templateUrl: './product-detail.component.html',
@@ -9,24 +10,20 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class ProductDetailComponent implements OnInit {
   pageTitle: string = 'Product Detail';
   product: IProduct;
+  errorMsg: string;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private _productSvc: ProductService, private router: Router) {}
 
   ngOnInit() {
     //we do not expect the url to change,
     //so we can use snapshot and not observable
     const id = +this.route.snapshot.paramMap.get('id');
     this.pageTitle += `: ${id}`;
-    this.product = new class implements IProduct {
-      description: string;
-      imageUrl: string;
-      price: number;
-      productCode: string;
-      productId: number;
-      productName: string;
-      releaseDate: string;
-      starRating: number;
-    };
+    this._productSvc.getProductDetails(id).subscribe( prodDetail => {
+      this.product = prodDetail;
+    },
+      err => this.errorMsg = <any>err
+    );
 
   }
 

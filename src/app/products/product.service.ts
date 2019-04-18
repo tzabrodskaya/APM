@@ -2,10 +2,12 @@ import {Injectable} from "@angular/core";
 import {IProduct} from "./product";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Observable} from "rxjs/internal/Observable";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, map, tap} from "rxjs/operators";
 import {throwError} from "rxjs/internal/observable/throwError";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ProductService {
 
   constructor(private http: HttpClient) {}
@@ -17,6 +19,12 @@ export class ProductService {
     );
   }
 
+  getProductDetails(id: number): Observable<IProduct> {
+    return this.getProducts().pipe(
+      map((data: IProduct[]) => data.find(product => product.productId === id)));
+  }
+
+
   private handleError(err: HttpErrorResponse) {
     let errorMessage = '';
     if (err.error instanceof ErrorEvent) { //client-side error
@@ -27,4 +35,5 @@ export class ProductService {
     console.log(errorMessage);
     return throwError(errorMessage);
   }
+
 }
